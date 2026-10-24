@@ -1,0 +1,2 @@
+1aed3ac336fff9e02c6b0c773ff7f7a8c311d44c1f8a291e7b02676995253721  WordFlow-1.2-Kokoro-debug.apk
+d3624977907ffa9c797d087dbc6ed5cd36ae60342733bf3737c5c6e30496ffd7  WordFlow-Android-source.zip
