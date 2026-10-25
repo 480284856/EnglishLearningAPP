@@ -1,0 +1,9 @@
+.gradle/
+**/build/
+local.properties
+.idea/
+*.iml
+*.jks
+
+app/libs/*.aar
+app/src/main/assets/kokoro/
