@@ -1,13 +1,31 @@
-# WordFlow 1.4 验证
+# WordFlow 1.5 验证
 
-JDK 21 / Gradle 8.9 / AGP 8.7.3 / Android SDK 35。`testDebugUnitTest lintDebug assembleDebug` 成功。29 项 JUnit 测试通过，lint 0 errors / 9 warnings。
+JDK 21 / Gradle 8.9 / AGP 8.7.3 / Android SDK 35。`testDebugUnitTest lintDebug assembleDebug` 成功，44 项 JUnit 测试通过；lint 0 errors / 9 warnings（备份配置建议及中文原生 UI 的文本拼接国际化建议）。独立 CSV 检查 24 项通过。
 
-新增验证：单列词汇和空例句 CSV；自定义例句添加 / 编辑 / 删除不覆盖导入例句；旧 JSON 读取及多例句序列化恢复；服务快照内容比较；单词无例句时跳转下一词、多例句全部播放后再跳词；大模型固定 HTTPS 端点、选择模型和提示、禁止将 Key 放入 JSON 请求体、响应提取及截断 / 空响应拒绝。
+## 本版检查
 
-首页词表、单词列表和底部播放器分离。个人主页支持 DeepSeek / OpenRouter Key 配置和独立清除，通过 Android KeyStore AES-GCM 加密保存，不回显 Key。仅用户点击才发送当前单词，结果先预览，确认保存为自定义例句。DeepSeek 使用官方当前推荐 deepseek-flash（关闭 thinking）；OpenRouter 默认 openrouter/free，不配置收费回退。
+- 多文件稳定合并：首尾空格 / 大小写去重，逐次累计词频，不同导入例句保留，相同例句去重，原有手动例句保留。
+- 单列含 / 不含表头、空第二列、混合有无例句仍可导入；合并词表上限拒绝时不修改原有快照。
+- 旧 JSON 默认词频 1，从原 sentence 迁移 importedExamples；合并数据、词频和手动例句序列化恢复。
+- 整项播放 1 / 2 / 3 遍，缺少例句时重复单词，终止及循环游标、临时终止片段、取消 / 切词后的过期令牌拒绝。
+- 实际已播帧计数：只计部分已播放音频，不计静止播放头，flush / 重复采样不重复计时，细粒度采样不损失整秒。
+- 收听时间按本地日期拆分，包括上海时区跨午夜和纽约夏令时 23 小时日；累计时长支持超过 24 / 100 小时。
+- 动态例句的相同结果比较忽略大小写和空白；固定 HTTPS 端点、模型与提示、Key 不在 JSON、响应提取及截断 / 无效结果拒绝。
+- 沿用既有文本分段、JNI 回调签名，以及缓存持久化、损坏校验、LRU 限制、取消临时写入和清理范围测试。
 
-APK v2 签名与 1.3 一致，可覆盖安装，旧词表和语音缓存保留。16 KB zipalign 校验通过。包名 cn.wordflow.app，版本 1.4（5），minSdk 26 / targetSdk 35，ARM64 / ARM32。APK 大小 149291306 字节。SHA-256 `92600eaa24c936d8053974518baa1a7db51ac2ba79f86c763be04066639ded21`。
+自动生成先检查已验证网络、开关及 Key，单请求有 20 秒预算；失败跳过，不自动重试或切换收费模型。临时例句走 speakTransient，绕过缓存读写；普通预缓存只处理持久化的词表片段。暂停 / 切词 / 切表 / 停止取消请求，旧响应不交付。
 
-没有真实用户 API Key，未向服务商发送实际生成请求或产生计费。KeyStore 设备端加解密、新界面交互、真实 API 认证 / 限流 / 付费、息屏切换等尚未真机 / 模拟器验收。单元测试不能替代这些设备及真实账户检查。
+## 交付校验
 
-官方接口依据： https://api-docs.deepseek.com/api/responses 和 https://openrouter.ai/openrouter/free/apps 。
+- 包名 `cn.wordflow.app`，版本 1.5（6），minSdk 26 / targetSdk 35，ARM64 / ARM32。
+- APK 签名验证通过，与 1.4 证书 SHA-256 一致：`6089cdff6e6097d998e02ae5821a4e05ea78506f45e07fd677b9773a97e47c5f`。可直接覆盖安装。
+- `zipalign -c -P 16 4` 通过。
+- APK 大小 149320496 字节。
+- APK SHA-256：`cfb3ba2337d0b724639e1625da6eb64bfb46a21e327d4c054a71b0c259fb3cb3`。
+- 签名私钥不在源码、源码 ZIP 或 Git 中。
+
+## 未验证的边界
+
+没有安卓模拟器 / 连接的小米真机，没有真实用户 API Key，未向服务商发送实际生成请求或产生计费。AudioTrack 在设备上的表现、KeyStore、系统文件多选、真实网络状态 / 认证 / 限流、生成质量、长期息屏、设备强杀后的统计落盘及 UI 可用性仍需手机验收。JVM 测试不能替代这些设备与真实账户检查。
+
+历史 Kokoro Linux 原生回调、取消与音频缓存 smoke 测试已通过。本版未更改原生模型、运行库、JNI 签名或缓存键版本，不重新下载或变更这些资源。
