@@ -1,2 +1,2 @@
 cfb3ba2337d0b724639e1625da6eb64bfb46a21e327d4c054a71b0c259fb3cb3  WordFlow-1.5-study-debug.apk
-4321c47218f881aa6c1b2bd159906e1b681152c0b2ffdec529b533418c5aa7d4  WordFlow-Android-source.zip
+ce75d42c8ea8c7ebb0a1295d11205a9df614c1a795daf1a01670f806713dd46f  WordFlow-Android-source.zip
