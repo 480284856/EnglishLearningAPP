@@ -1,0 +1,2 @@
+92600eaa24c936d8053974518baa1a7db51ac2ba79f86c763be04066639ded21  WordFlow-1.4-examples-ai-debug.apk
+b7d460a249b2dcfe741b14c958be46642b3be17694b5a12084a720f08df5dbf8  WordFlow-Android-source.zip
